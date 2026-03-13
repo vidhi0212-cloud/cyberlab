@@ -4,15 +4,19 @@ const Employee = require("../models/Employee");
 
 const generateToken = require("../controllers/tokenGenerator");
 const templates = require("../controllers/templates");
+const sendEmail = require("../controllers/emailSender");
 
+
+// Create campaign
 router.post("/create", async (req, res) => {
 
-  const { campaignName, attacks, departments } = req.body;
+  const { campaignName, attacks, departments, template } = req.body;
 
   const campaign = new Campaign({
     campaignName,
     attacks,
-    departments
+    departments,
+    template
   });
 
   await campaign.save();
@@ -22,40 +26,45 @@ router.post("/create", async (req, res) => {
 });
 
 
-// Simulation delivery
+// Deliver simulation emails
+router.post("/deliver", async (req, res) => {
 
-router.post("/deliver", async (req,res)=>{
+  const { attack, departments } = req.body;
 
-const {attack, departments} = req.body;
+  const selectedTemplate = templates[attack];
 
-const selectedTemplate = templates[attack];
+  const employees = await Employee.find({
+    department: { $in: departments }
+  });
 
-const employees = await Employee.find({
-department: { $in: departments }
-});
+  let result = [];
 
-let result = [];
+  for (let emp of employees) {
 
-for(let emp of employees){
+    const token = generateToken();
 
-const token = generateToken();
+    emp.token = token;
 
-emp.token = token;
-await emp.save();
+    await emp.save();
 
-result.push({
+    // send phishing simulation email
+    await sendEmail(
+      emp.email,
+      selectedTemplate.subject,
+      selectedTemplate.body,
+      token
+    );
 
-name: emp.name,
-email: emp.email,
-department: emp.department,
-token: token,
-template: selectedTemplate.subject
+    result.push({
+      name: emp.name,
+      email: emp.email,
+      department: emp.department,
+      token: token
+    });
 
-});
+  }
 
-}
-
-res.json(result);
+  res.json(result);
 
 });
 
