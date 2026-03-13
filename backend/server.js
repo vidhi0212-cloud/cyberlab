@@ -6,6 +6,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const campaignRoutes = require("./routes/campaignRoutes");
+const trackingRoutes = require("./routes/trackingRoutes");
 
 const app = express();
 
@@ -25,12 +26,13 @@ mongoose.connect("mongodb://localhost:27017/cyberlab", {
   console.log(err);
 });
 
-// Route connections
+// Routes
 app.use("/auth", authRoutes);
 app.use("/groups", groupRoutes);
 app.use("/campaign", campaignRoutes);
+app.use("/track", trackingRoutes);
 
-// Test route (optional but helpful)
+// Test route
 app.get("/", (req, res) => {
   res.send("Cyber Awareness Simulator Backend Running");
 });
