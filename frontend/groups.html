@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Groups</title>
+</head>
+
+<body>
+
+<h2>Upload Employees CSV</h2>
+
+<input type="file" id="csvfile">
+
+<button onclick="uploadCSV()">Upload</button>
+
+<script>
+
+const API="http://localhost:5000";
+
+function uploadCSV(){
+
+const file=document.getElementById("csvfile").files[0];
+
+const formData=new FormData();
+
+formData.append("file",file);
+
+fetch(API+"/groups/upload",{
+
+method:"POST",
+
+body:formData
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+alert("Employees Uploaded");
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
