@@ -1,0 +1,48 @@
+<h2>Create Campaign</h2>
+
+<select id="attack">
+
+<option>Credential Phishing</option>
+<option>Malware Attachment</option>
+<option>Fake Login Page</option>
+<option>Payment Fraud</option>
+<option>Link Manipulation</option>
+<option>CEO Fraud</option>
+
+</select>
+
+<input id="department" placeholder="Department">
+
+<button onclick="runCampaign()">Start Campaign</button>
+
+<script>
+
+const API="http://localhost:5000";
+
+function runCampaign(){
+
+const attack=document.getElementById("attack").value;
+const department=document.getElementById("department").value;
+
+fetch(API+"/campaign/deliver",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+attack:attack,
+departments:[department]
+
+})
+
+});
+
+alert("Campaign Started");
+
+}
+
+</script>
