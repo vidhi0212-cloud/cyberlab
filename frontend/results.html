@@ -1,0 +1,36 @@
+<h2>Simulation Results</h2>
+
+<button onclick="loadResults()">Load Results</button>
+
+<ul id="results"></ul>
+
+<script>
+
+const API="http://localhost:5000";
+
+function loadResults(){
+
+fetch(API+"/results")
+.then(res=>res.json())
+.then(data=>{
+
+const list=document.getElementById("results");
+
+list.innerHTML="";
+
+data.forEach(emp=>{
+
+const li=document.createElement("li");
+
+li.innerText=
+emp.name+" | "+emp.department+" | clicked:"+emp.clicked;
+
+list.appendChild(li);
+
+});
+
+});
+
+}
+
+</script>
